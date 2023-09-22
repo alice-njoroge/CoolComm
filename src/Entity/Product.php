@@ -85,7 +85,8 @@ class Product implements JsonSerializable
         return [
             'name' => $this->getName(),
             'price'=> $this->getPrice(),
-            'description'=>$this->getDescription()
+            'description'=>$this->getDescription(),
+            'productId'=>$this->getProductId()
         ];
     }
 }

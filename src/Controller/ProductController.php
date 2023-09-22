@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProductController extends AbstractController
 {
     private ProductRepository $productRepository;
+
     public function __construct(ProductRepository $productRepository)
     {
         $this->productRepository = $productRepository;
@@ -21,6 +22,16 @@ class ProductController extends AbstractController
     {
         $products = $this->productRepository->findAll();
         return $this->json($products);
+    }
+
+    #[Route('/products/{productId}', methods: ['GET'])]
+    public function show(string $productId): JsonResponse
+    {
+        $product = $this->productRepository->findOneBy(['productId' => $productId]);
+        if (!$product) {
+            return $this->json(['error'=> "product with product id: $productId not found"], status: 400);
+        }
+        return $this->json($product);
     }
 
     #[Route('/products', methods: ['POST'])]
