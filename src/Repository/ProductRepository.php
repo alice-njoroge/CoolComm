@@ -63,6 +63,23 @@ class ProductRepository extends ServiceEntityRepository
         return $product;
 
     }
+
+    public function update(Product $product, string $name, string $description, string $price): Product
+    {
+        $product->setName($name);
+        $product->setDescription($description);
+        $product->setPrice($price);
+
+        $this->_em->persist($product);
+        $this->_em->flush();
+        return $product;
+    }
+
+    public function remove(Product $product): void
+    {
+        $this->_em->remove($product);
+        $this->_em->flush();
+    }
 }
 
 

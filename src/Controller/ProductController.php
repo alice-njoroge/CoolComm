@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Product;
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -29,7 +30,7 @@ class ProductController extends AbstractController
     {
         $product = $this->productRepository->findOneBy(['productId' => $productId]);
         if (!$product) {
-            return $this->json(['error'=> "product with product id: $productId not found"], status: 400);
+            return $this->json(['error' => "product with product id: $productId not found"], status: 400);
         }
         return $this->json($product);
     }
@@ -46,9 +47,43 @@ class ProductController extends AbstractController
         $description = $data['description'];
         $price = $data['price'];
 
-        $this->productRepository->create($name, $description, $price);
+        $product = $this->productRepository->create($name, $description, $price);
 
-       return $this->json([], status:201 );
+        return $this->json($product, status: 201);
 
     }
+
+    #[Route('/products/{productId}', methods: ['PUT'])]
+    public function update(string $productId, Request $request): JsonResponse
+    {
+        $product = $this->productRepository->findOneBy(['productId' => $productId]);
+        if (!$product) {
+            return $this->json(['error' => "product with product id: $productId not found"], status: 400);
+        }
+
+        $content = $request->getContent();
+        //decode the JSON into an associative array
+        $data = json_decode($content, associative: true);
+
+        $name = $data['name'];
+        $description = $data['description'];
+        $price = $data['price'];
+
+        $this->productRepository->update($product, $name, $description, $price);
+
+        return $this->json($product);
+    }
+
+    #[Route('/products/{productId}', methods: ['DELETE'])]
+    public function remove(string $productId): JsonResponse
+    {
+        $product = $this->productRepository->findOneBy(['productId' => $productId]);
+        if (!$product) {
+            return $this->json(['error' => "product with product id: $productId not found"], status: 404);
+        }
+
+        $this->productRepository->remove($product);
+        return $this->json([], status: 204);
+    }
+
 }
