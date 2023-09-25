@@ -8,39 +8,50 @@ use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ProductCategoryController extends AbstractController
 {
     private ProductCategoryRepository $productCategoryRepository;
+    private ValidatorInterface $validator;
 
-    public function __construct(ProductCategoryRepository $productCategoryRepository)
+    public function __construct(ProductCategoryRepository $productCategoryRepository, ValidatorInterface $validator)
     {
         $this->productCategoryRepository = $productCategoryRepository;
+        $this->validator = $validator;
+    }
+
+    private function findCategoryByID($categoryId) : Object
+    {
+        $category = $this->productCategoryRepository->findOneBy([
+            'id'=>$categoryId,
+            'deleted_at'=>null
+        ]);
+
+        if (!$category){
+           throw new NotFoundHttpException("product category with id: $categoryId not found ");
+        }
+
+        return $category;
     }
 
     #[Route('/products/categories', name: 'app_product_category', methods: ['GET'])]
     public function index(): JsonResponse
     {
-        $products = $this->productCategoryRepository->findBy([
+        $category = $this->productCategoryRepository->findBy([
             'deleted_at' => null
         ]);
-        return $this->json($products);
+        return $this->json($category);
     }
 
     #[Route('/products/categories/{categoryId}', methods: ['GET'])]
     public function show(string $categoryId): JsonResponse
     {
-        $category = $this->productCategoryRepository->findOneBy([
-            'id' => $categoryId,
-            'deleted_at' => null
+        $category = $this->findCategoryByID($categoryId);
+       return $this->json($category);
 
-        ]);
-
-        if (!$category) {
-            return $this->json(["error" => "product with id: $categoryId not found "], status: 404);
-        }
-        return $this->json($category);
     }
 
     #[Route('/products/categories', methods: ['POST'])]
@@ -57,6 +68,14 @@ class ProductCategoryController extends AbstractController
         $category->setDescription($data['description']);
         $category->setCreatedAt($date);
 
+        $errors = $this->validator->validate($category);
+        if (count($errors) > 0){
+            $errorString = (string) $errors;
+            return $this->json($errorString, status: 400);
+        }
+
+
+
         $this->productCategoryRepository->save($category);
 
         return $this->json([], status: 201);
@@ -67,15 +86,9 @@ class ProductCategoryController extends AbstractController
     public function update(Request $request, string $categoryId): JsonResponse
     {
         //get the product category by id - if not found, return an error - otherwise persist the changes
-        $category = $this->productCategoryRepository->findOneBy([
-            'id' => $categoryId,
-            'deleted_at' => null
-        ]);
+        $category = $this->findCategoryByID($categoryId);
 
-        if (!$category) {
-            return $this->json(['error' => "product category with id: $categoryId not found "], status: 404);
-        }
-
+        //:TODO is it possible to decode this JSON more efficiently?
         $content = $request->getContent();
         $data = json_decode($content, associative: true);
         $date = new DateTimeImmutable('now');
@@ -94,13 +107,8 @@ class ProductCategoryController extends AbstractController
     public function remove($categoryId): JsonResponse
     {
 
-        $category = $this->productCategoryRepository->findOneBy([
-            'id' => $categoryId,
-            'deleted_at' => null
-        ]);
-        if (!$category) {
-            return $this->json(['error' => "category with id $categoryId does not exist"]);
-        }
+        $category = $this->findCategoryByID($categoryId);
+
         $date = new DateTimeImmutable('now');
         $category->setDeletedAt($date);
 
