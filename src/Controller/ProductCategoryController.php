@@ -23,20 +23,6 @@ class ProductCategoryController extends AbstractController
         $this->validator = $validator;
     }
 
-    private function findCategoryByID($categoryId) : Object
-    {
-        $category = $this->productCategoryRepository->findOneBy([
-            'id'=>$categoryId,
-            'deleted_at'=>null
-        ]);
-
-        if (!$category){
-           throw new NotFoundHttpException("product category with id: $categoryId not found ");
-        }
-
-        return $category;
-    }
-
     #[Route('/products/categories', name: 'app_product_category', methods: ['GET'])]
     public function index(): JsonResponse
     {
@@ -49,7 +35,7 @@ class ProductCategoryController extends AbstractController
     #[Route('/products/categories/{categoryId}', methods: ['GET'])]
     public function show(string $categoryId): JsonResponse
     {
-        $category = $this->findCategoryByID($categoryId);
+        $category = $this->productCategoryRepository->findById($categoryId);
        return $this->json($category);
 
     }
@@ -85,17 +71,16 @@ class ProductCategoryController extends AbstractController
     #[Route('/products/categories/{categoryId}', methods: ['POST'])]
     public function update(Request $request, string $categoryId): JsonResponse
     {
-        //get the product category by id - if not found, return an error - otherwise persist the changes
-        $category = $this->findCategoryByID($categoryId);
+        $category = $this->productCategoryRepository->findById($categoryId);
 
         //:TODO is it possible to decode this JSON more efficiently?
         $content = $request->getContent();
         $data = json_decode($content, associative: true);
+
         $date = new DateTimeImmutable('now');
 
         $category->setName($data['name']);
         $category->setDescription($data['description']);
-
         $category->setModifiedAt($date);
 
         $category = $this->productCategoryRepository->save($category);
@@ -107,14 +92,14 @@ class ProductCategoryController extends AbstractController
     public function remove($categoryId): JsonResponse
     {
 
-        $category = $this->findCategoryByID($categoryId);
+        $category = $this->productCategoryRepository->findById($categoryId);
 
         $date = new DateTimeImmutable('now');
         $category->setDeletedAt($date);
 
         $this->productCategoryRepository->save($category);
 
-        return $this->json([], status: 204);
+        return $this->json(['message'=> "item with id: $categoryId has been deleted successfully"], status: 204);
     }
 
 }
