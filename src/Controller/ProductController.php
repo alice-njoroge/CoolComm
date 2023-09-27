@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 
+use App\Repository\ProductCategoryRepository;
 use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -12,10 +13,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProductController extends AbstractController
 {
     private ProductRepository $productRepository;
+    private ProductCategoryRepository $productCategoryRepository;
 
-    public function __construct(ProductRepository $productRepository)
+    public function __construct(
+        ProductRepository $productRepository,
+        ProductCategoryRepository $productCategoryRepository
+    )
     {
         $this->productRepository = $productRepository;
+        $this->productCategoryRepository = $productCategoryRepository;
     }
 
     #[Route('/products', name: 'app_product', methods: ['GET'])]
@@ -46,8 +52,16 @@ class ProductController extends AbstractController
         $name = $data['name'];
         $description = $data['description'];
         $price = $data['price'];
+        $categoryId = array_key_exists('productCategoryId', $data) ? $data['productCategoryId'] : null;
 
-        $product = $this->productRepository->create($name, $description, $price);
+        $category = null;
+        if($categoryId){
+            // if the item exists in DB and is not deleted, get the object
+            $category = $this->productCategoryRepository->findById($categoryId);
+        }
+
+
+        $product = $this->productRepository->create($name, $description, $price, $category);
 
         return $this->json($product, status: 201);
 

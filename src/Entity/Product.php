@@ -27,6 +27,9 @@ class Product implements JsonSerializable
     #[ORM\Column(type: Types::GUID)]
     private ?string $productId = null;
 
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    private ?ProductCategory $productCategory = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -86,7 +89,20 @@ class Product implements JsonSerializable
             'name' => $this->getName(),
             'price'=> $this->getPrice(),
             'description'=>$this->getDescription(),
-            'productId'=>$this->getProductId()
+            'productId'=>$this->getProductId(),
+            'productCategory'=>$this->getProductCategory()
         ];
+    }
+
+    public function getProductCategory(): ?ProductCategory
+    {
+        return $this->productCategory;
+    }
+
+    public function setProductCategory(?ProductCategory $productCategory): static
+    {
+        $this->productCategory = $productCategory;
+
+        return $this;
     }
 }

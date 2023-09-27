@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Product;
+use App\Entity\ProductCategory;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Ramsey\Uuid\Uuid;
@@ -47,7 +48,7 @@ class ProductRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-    public function create(string $name, string $description, string $price): Product
+    public function create(string $name, string $description, string $price, ?ProductCategory $category): Product
     {
         $uuid = Uuid::uuid4();
 
@@ -57,6 +58,7 @@ class ProductRepository extends ServiceEntityRepository
         $product->setDescription($description);
         $product->setPrice($price);
         $product->setProductId($uuid->toString());
+        $product->setProductCategory($category);
 
         $this->_em->persist($product);
         $this->_em->flush();
