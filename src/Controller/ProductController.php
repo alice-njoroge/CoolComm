@@ -53,7 +53,7 @@ class ProductController extends AbstractController
         $data = json_decode($content, associative: true);
 
         $categoryId = array_key_exists('productCategoryId', $data) ? $data['productCategoryId'] : null;
-        $category = null;
+
         if($categoryId){
             // if the item exists in DB and is not deleted, get the object
             $category = $this->productCategoryRepository->findById($categoryId);
@@ -69,7 +69,7 @@ class ProductController extends AbstractController
 
         $product->setProductId($uuid->toString());
         $product->setProductCategory($category);
-        
+
 
         $this->productRepository->save($product);
 
@@ -78,7 +78,7 @@ class ProductController extends AbstractController
     }
 
     #[Route('/products/{productId}', methods: ['PUT'])]
-    public function update(string $productId, Request $request): JsonResponse
+    public function update(string $productId, Request $request, ?ProductCategory $category): JsonResponse
     {
         $product = $this->productRepository->findOneBy(['productId' => $productId]);
         if (!$product) {
@@ -89,11 +89,20 @@ class ProductController extends AbstractController
         //decode the JSON into an associative array
         $data = json_decode($content, associative: true);
 
-        $name = $data['name'];
-        $description = $data['description'];
-        $price = $data['price'];
+        $categoryId = array_key_exists('productCategory', $data) ? $data['productCategory'] : null;
 
-        $this->productRepository->update($product, $name, $description, $price);
+        if($categoryId){
+            // if the item exists in DB and is not deleted, get the object
+            $category = $this->productCategoryRepository->findById($categoryId);
+        }
+
+        $product->setName($data['name']);
+        $product->setDescription($data['description']);
+        $product->setPrice($data['price']);
+        $product->setProductCategory($category);
+
+
+        $this->productRepository->save($product);
 
         return $this->json($product);
     }
