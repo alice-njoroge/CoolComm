@@ -48,18 +48,8 @@ class ProductRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-    public function create(string $name, string $description, string $price, ?ProductCategory $category): Product
+    public function save (Product $product): Product
     {
-        $uuid = Uuid::uuid4();
-
-        $product = new Product();
-
-        $product->setName($name);
-        $product->setDescription($description);
-        $product->setPrice($price);
-        $product->setProductId($uuid->toString());
-        $product->setProductCategory($category);
-
         $this->_em->persist($product);
         $this->_em->flush();
         return $product;

@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 
+use App\Entity\Product;
+use App\Entity\ProductCategory;
 use App\Repository\ProductCategoryRepository;
 use App\Repository\ProductRepository;
+use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,26 +45,33 @@ class ProductController extends AbstractController
     }
 
     #[Route('/products', methods: ['POST'])]
-    public function create(Request $request): JsonResponse
+    public function create(Request $request, ?ProductCategory $category): JsonResponse
     {
         //get the data from the request body
         $content = $request->getContent();
         //decode the JSON into an associative array
         $data = json_decode($content, associative: true);
 
-        $name = $data['name'];
-        $description = $data['description'];
-        $price = $data['price'];
         $categoryId = array_key_exists('productCategoryId', $data) ? $data['productCategoryId'] : null;
-
         $category = null;
         if($categoryId){
             // if the item exists in DB and is not deleted, get the object
             $category = $this->productCategoryRepository->findById($categoryId);
         }
 
+        $uuid = Uuid::uuid4();
 
-        $product = $this->productRepository->create($name, $description, $price, $category);
+        $product = new Product();
+
+        $product->setName($data['name']);
+        $product->setDescription($data['description']);
+        $product->setPrice($data['price']);
+
+        $product->setProductId($uuid->toString());
+        $product->setProductCategory($category);
+        
+
+        $this->productRepository->save($product);
 
         return $this->json($product, status: 201);
 
