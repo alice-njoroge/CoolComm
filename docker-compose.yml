@@ -2,6 +2,15 @@ version: '3'
 
 services:
 
+  api:
+    image: thecodingmachine/php:8.2-v4-apache
+    ports:
+      - "8085:80"
+    volumes:
+      - .:/var/www/html
+    environment:
+      APACHE_DOCUMENT_ROOT: public/
+
   database:
     image: mysql
     environment:
