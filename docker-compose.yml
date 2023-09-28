@@ -4,8 +4,6 @@ services:
 
   api:
     image: thecodingmachine/php:8.2-v4-apache
-    ports:
-      - "8085:80"
     volumes:
       - .:/var/www/html
     environment:
@@ -18,16 +16,11 @@ services:
       MYSQL_DATABASE: "$MYSQL_DATABASE"
       MYSQL_USER: "$MYSQL_USER"
       MYSQL_PASSWORD: "$MYSQL_PASSWORD"
-    ports:
-      - "4306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
   redis:
     image: redis/redis-stack:latest
-    ports:
-      - "6379:639"
-      - "8001:8001"
     volumes:
       - redis_data:/data
 
