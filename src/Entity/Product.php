@@ -30,6 +30,9 @@ class Product implements JsonSerializable
     #[ORM\ManyToOne(inversedBy: 'products')]
     private ?ProductCategory $productCategory = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $deleted_at = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -83,16 +86,6 @@ class Product implements JsonSerializable
         return $this;
     }
 
-    public function jsonSerialize(): mixed
-    {
-        return [
-            'name' => $this->getName(),
-            'price'=> $this->getPrice(),
-            'description'=>$this->getDescription(),
-            'productId'=>$this->getProductId(),
-            'productCategory'=>$this->getProductCategory()
-        ];
-    }
 
     public function getProductCategory(): ?ProductCategory
     {
@@ -104,5 +97,27 @@ class Product implements JsonSerializable
         $this->productCategory = $productCategory;
 
         return $this;
+    }
+    public function getDeletedAt(): ?\DateTimeImmutable
+    {
+        return $this->deleted_at;
+    }
+
+    public function setDeletedAt(?\DateTimeImmutable $deleted_at): static
+    {
+        $this->deleted_at = $deleted_at;
+
+        return $this;
+    }
+    public function jsonSerialize(): mixed
+    {
+        return [
+            'name' => $this->getName(),
+            'price'=> $this->getPrice(),
+            'description'=>$this->getDescription(),
+            'productId'=>$this->getProductId(),
+            'productCategory'=>$this->getProductCategory(),
+            'deleted_at'=>$this->getDeletedAt()
+        ];
     }
 }

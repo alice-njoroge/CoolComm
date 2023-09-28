@@ -7,6 +7,7 @@ use App\Entity\Product;
 use App\Entity\ProductCategory;
 use App\Repository\ProductCategoryRepository;
 use App\Repository\ProductRepository;
+use DateTimeImmutable;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -30,17 +31,16 @@ class ProductController extends AbstractController
     #[Route('/products', name: 'app_product', methods: ['GET'])]
     public function index(): JsonResponse
     {
-        $products = $this->productRepository->findAll();
+        $products = $this->productRepository->findBy([
+            'deleted_at' => null]);
         return $this->json($products);
     }
 
     #[Route('/products/{productId}', methods: ['GET'])]
     public function show(string $productId): JsonResponse
     {
-        $product = $this->productRepository->findOneBy(['productId' => $productId]);
-        if (!$product) {
-            return $this->json(['error' => "product with product id: $productId not found"], status: 400);
-        }
+        $product = $this->productRepository->findByProductId( $productId);
+
         return $this->json($product);
     }
 
@@ -80,10 +80,7 @@ class ProductController extends AbstractController
     #[Route('/products/{productId}', methods: ['PUT'])]
     public function update(string $productId, Request $request, ?ProductCategory $category): JsonResponse
     {
-        $product = $this->productRepository->findOneBy(['productId' => $productId]);
-        if (!$product) {
-            return $this->json(['error' => "product with product id: $productId not found"], status: 400);
-        }
+        $product = $this->productRepository->findByProductId($productId);
 
         $content = $request->getContent();
         //decode the JSON into an associative array
@@ -110,12 +107,12 @@ class ProductController extends AbstractController
     #[Route('/products/{productId}', methods: ['DELETE'])]
     public function remove(string $productId): JsonResponse
     {
-        $product = $this->productRepository->findOneBy(['productId' => $productId]);
-        if (!$product) {
-            return $this->json(['error' => "product with product id: $productId not found"], status: 404);
-        }
+        $product = $this->productRepository->findByProductId($productId);
+        $date = new DateTimeImmutable('now');
 
-        $this->productRepository->remove($product);
+        $product->setDeletedAt($date);
+        $this->productRepository->save($product);
+
         return $this->json([], status: 204);
     }
 

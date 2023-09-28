@@ -3,10 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Product;
-use App\Entity\ProductCategory;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Ramsey\Uuid\Uuid;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 
 /**
  * @extends ServiceEntityRepository<Product>
@@ -48,7 +48,7 @@ class ProductRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-    public function save (Product $product): Product
+    public function save(Product $product): Product
     {
         $this->_em->persist($product);
         $this->_em->flush();
@@ -61,6 +61,20 @@ class ProductRepository extends ServiceEntityRepository
     {
         $this->_em->remove($product);
         $this->_em->flush();
+    }
+
+    public function findByProductId($productId)
+    {
+        $product = $this->findOneBy([
+            'productId' => $productId,
+            'deleted_at' => null
+        ]);
+
+        if (!$product) {
+            throw new NotFoundHttpException("product with id: $productId not found ");
+        }
+
+        return $product;
     }
 }
 
