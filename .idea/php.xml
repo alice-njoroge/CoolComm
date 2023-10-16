@@ -140,6 +140,7 @@
       <path value="$PROJECT_DIR$/backend/vendor/doctrine/common" />
       <path value="$PROJECT_DIR$/backend/vendor/doctrine/lexer" />
       <path value="$PROJECT_DIR$/backend/vendor/doctrine/dbal" />
+      <path value="$PROJECT_DIR$/backend/vendor/nelmio/cors-bundle" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.1" />
