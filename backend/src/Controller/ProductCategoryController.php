@@ -67,7 +67,7 @@ class ProductCategoryController extends AbstractController
 
     }
 
-    #[Route('/products/categories/{categoryId}', methods: ['POST'])]
+    #[Route('/products/categories/{categoryId}', methods: ['PUT'])]
     public function update(Request $request, string $categoryId): JsonResponse
     {
         $category = $this->productCategoryRepository->findById($categoryId);
