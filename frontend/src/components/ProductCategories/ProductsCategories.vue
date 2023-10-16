@@ -10,6 +10,8 @@ export default {
       productCategories: [],
       modal: null,
       editing: false,
+      deleting : false,
+      category:null,
       form: {
         name: '',
         description: '',
@@ -18,6 +20,21 @@ export default {
     }
   },
   methods: {
+    async removeCategory(){
+      await axios.delete('http://api.backend.orb.local/products/categories/' + this.category.id);
+
+      this.category = null;
+      this.deleting = false;
+
+      await this.fetchProductCategories();
+      this.closeModal();
+    },
+    remove(category){
+      this.deleting = true;
+      this.showModal();
+      this.category = category;
+
+    },
     async saveCategory() {
       if(this.editing){
         await axios.put('http://api.backend.orb.local/products/categories/' + this.form.id , this.form)
@@ -36,6 +53,7 @@ export default {
     },
     editModal(category) {
       this.editing = true;
+      this.deleting = false;
 
       this.form.id = category.id;
       this.form.name = category.name;
@@ -60,7 +78,10 @@ export default {
       this.form.id = null
       this.form.name = ''
       this.form.description = ''
+
       this.editing = false;
+      this.deleting = false;
+
       this.showModal();
     }
   },
@@ -85,11 +106,13 @@ export default {
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">{{ editing ? 'Edit': 'Add'  }} Product Category</h1>
+          <h1 class="modal-title fs-5" v-if="deleting" id="exampleModalLabel"> Remove Product Category</h1>
+          <h1 class="modal-title fs-5" v-else id="exampleModalLabel">{{ editing ? 'Edit': 'Add'  }} Product Category</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form>
+          <p v-if="deleting"> Are you sure you want to delete this category: <b> {{ this.category.name }} </b>?? </p>
+          <form v-else>
             <div class="mb-3">
               <label for="name" class="form-label">Name</label>
               <input v-model="form.name" type="text" class="form-control" id="name">
@@ -102,7 +125,9 @@ export default {
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" @click="saveCategory" class="btn btn-primary">Save changes</button>
+          <button v-if="deleting"  type="button" @click="removeCategory" class="btn btn-danger">Delete Category</button>
+          <button v-else type="button" @click="saveCategory" class="btn btn-primary">Save changes</button>
+
         </div>
       </div>
     </div>
@@ -126,7 +151,7 @@ export default {
       <td>{{ dateFormat(category.created_at) }}</td>
       <td>
         <button type="button" @click="editModal(category)" class="btn btn-secondary mx-1">Edit</button>
-        <button type="button" class="btn btn-danger">Remove</button>
+        <button type="button" @click="remove(category)" class="btn btn-danger">Remove</button>
       </td>
     </tr>
     </tbody>
