@@ -9,6 +9,7 @@ export default {
     return {
       productCategories: [],
       modal: null,
+      submitting:false,
       editing: false,
       deleting : false,
       category:null,
@@ -21,21 +22,25 @@ export default {
   },
   methods: {
     async removeCategory(){
+      this.submitting = true;
       await axios.delete('http://api.backend.orb.local/products/categories/' + this.category.id);
 
       this.category = null;
-      this.deleting = false;
 
       await this.fetchProductCategories();
       this.closeModal();
+      this.deleting = false;
+      this.submitting = false;
     },
     remove(category){
       this.deleting = true;
+      this.editing = false;
       this.showModal();
       this.category = category;
 
     },
     async saveCategory() {
+      this.submitting = true;
       if(this.editing){
         await axios.put('http://api.backend.orb.local/products/categories/' + this.form.id , this.form)
 
@@ -44,6 +49,7 @@ export default {
       }
 
       await this.fetchProductCategories();
+      this.submitting = false;
       this.closeModal();
     },
     async fetchProductCategories() {
@@ -125,8 +131,15 @@ export default {
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button v-if="deleting"  type="button" @click="removeCategory" class="btn btn-danger">Delete Category</button>
-          <button v-else type="button" @click="saveCategory" class="btn btn-primary">Save changes</button>
+
+          <button v-if="deleting" @click="removeCategory" class="btn btn-danger" type="button" :disabled="submitting">
+            <span v-if="submitting" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            <span role="status"> {{ submitting ? 'Loading...': 'Delete Category'  }}</span>
+          </button>
+          <button v-else class="btn btn-primary" @click="saveCategory" type="button" :disabled="submitting">
+            <span v-if="submitting" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+            <span role="status">{{ submitting? 'Loading...' : 'Save changes' }}</span>
+          </button>
 
         </div>
       </div>
