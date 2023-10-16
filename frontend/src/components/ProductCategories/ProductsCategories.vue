@@ -9,9 +9,18 @@ export default {
     return {
       productCategories: [],
       modal: null,
+      form: {
+        name: '',
+        description: ''
+      }
     }
   },
   methods: {
+    async saveCategory(){
+      await axios.post('http://api.backend.orb.local/products/categories', this.form);
+      await this.fetchProductCategories();
+      this.closeModal();
+    },
     async fetchProductCategories() {
       const response = await axios.get('http://api.backend.orb.local/products/categories');
       this.productCategories = response.data;
@@ -27,7 +36,7 @@ export default {
       }
     },
     closeModal(){
-      this.modal.close()
+      this.modal.hide()
     }
   },
   created() {
@@ -45,20 +54,29 @@ export default {
     <button type="button" @click="showModal" class="btn btn-primary">Add</button>
   </div>
   <!-- Modal -->
-  <div class="modal fade" ref="addCategoryModal" id="addCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+  <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" ref="addCategoryModal" id="addCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel"
        aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Add Product Category</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          ...
+          <form>
+            <div class="mb-3">
+              <label for="name" class="form-label">Name</label>
+              <input v-model="form.name" type="text" class="form-control" id="name" >
+            </div>
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea v-model="form.description" class="form-control" id="description" rows="3"></textarea>
+            </div>
+          </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
+          <button type="button" @click="saveCategory" class="btn btn-primary">Save changes</button>
         </div>
       </div>
     </div>
