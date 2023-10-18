@@ -4,7 +4,7 @@ import {format} from "date-fns";
 import {Modal} from 'bootstrap'
 
 export default {
-  name: "productsCategories",
+  name: "categoryList",
   data() {
     return {
       productCategories: [],
@@ -58,14 +58,7 @@ export default {
 
     },
     editModal(category) {
-      this.editing = true;
-      this.deleting = false;
-
-      this.form.id = category.id;
-      this.form.name = category.name;
-      this.form.description = category.description;
-
-      this.showModal();
+      this.$router.push(`/categories/edit/${category.id}`)
     },
 
 
@@ -81,14 +74,7 @@ export default {
       this.modal.hide()
     },
     add(){
-      this.form.id = null
-      this.form.name = ''
-      this.form.description = ''
-
-      this.editing = false;
-      this.deleting = false;
-
-      this.showModal();
+      this.$router.push('/categories/create')
     }
   },
   created() {
