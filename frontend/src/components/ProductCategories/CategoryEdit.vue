@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: "CategoryCreate",
+  name: "CategoryEdit",
 
   data() {
     return {

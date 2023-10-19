@@ -57,8 +57,8 @@ export default {
       this.productCategories = response.data;
 
     },
-    editModal(category) {
-      this.$router.push(`/categories/edit/${category.id}`)
+    edit(category) {
+      this.$router.push({name: 'CategoryEdit', params:{id: category.id} })
     },
 
 
@@ -74,7 +74,7 @@ export default {
       this.modal.hide()
     },
     add(){
-      this.$router.push('/categories/create')
+      this.$router.push({name: 'CategoryCreate'})
     }
   },
   created() {
@@ -149,7 +149,7 @@ export default {
       <td>{{ category.description }}</td>
       <td>{{ dateFormat(category.created_at) }}</td>
       <td>
-        <button type="button" @click="editModal(category)" class="btn btn-secondary mx-1">Edit</button>
+        <button type="button" @click="edit(category)" class="btn btn-secondary mx-1">Edit</button>
         <button type="button" @click="remove(category)" class="btn btn-danger">Remove</button>
       </td>
     </tr>

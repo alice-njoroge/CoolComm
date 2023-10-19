@@ -10,12 +10,12 @@ const router = createRouter({
         },
         {
             path: '/categories/create',
-            name: 'categoryCreate',
+            name: 'CategoryCreate',
             component: () => import('@/components/ProductCategories/CategoryCreate.vue')
         },
         {
             path: '/categories/edit/:id',
-            name: 'categoryEdit',
+            name: 'CategoryEdit',
             component: () => import('@/components/ProductCategories/categoryEdit.vue')
         }
     ],
