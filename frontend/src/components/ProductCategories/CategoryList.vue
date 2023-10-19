@@ -39,23 +39,14 @@ export default {
       this.category = category;
 
     },
-    async saveCategory() {
-      this.submitting = true;
-      if(this.editing){
-        await axios.put(`http://api.backend.orb.local/products/categories/${this.form.id}`  , this.form)
 
-      } else{
-        await axios.post('http://api.backend.orb.local/products/categories', this.form);
-      }
-
-      await this.fetchProductCategories();
-      this.submitting = false;
-      this.closeModal();
-    },
     async fetchProductCategories() {
       const response = await axios.get('http://api.backend.orb.local/products/categories');
       this.productCategories = response.data;
 
+    },
+    add(){
+      this.$router.push({name: 'CategoryCreate'})
     },
     edit(category) {
       this.$router.push({name: 'CategoryEdit', params:{id: category.id} })
@@ -73,9 +64,6 @@ export default {
     closeModal() {
       this.modal.hide()
     },
-    add(){
-      this.$router.push({name: 'CategoryCreate'})
-    }
   },
   created() {
     this.fetchProductCategories()

@@ -1,26 +1,50 @@
 <script>
+import axios from "axios";
+
 export default {
   name: "CategoryEdit",
-
-  data() {
-    return {
-      categoryId: null,
-      form:{
-        name:"",
-        description:""
-      }
+  props: {
+    id:{
+      type: Number,
+      required: true,
     }
   },
 
-  created() {
-    this.categoryId = this.$route.params.id
+  data() {
+    return {
+      category: {},
+      form:{
+        name:"",
+        description:""
+      },
+      submitting: false
+    }
+  },
+  methods:{
+    async editCategory(){
+      this.submitting = true;
+      await axios.put(`http://api.backend.orb.local/products/categories/${this.id}`, this.form);
+
+      this.submitting = false;
+      this.$router.push({name: 'categories'})
+
+    }
+  },
+
+  async created() {
+    const response = await axios.get(`http://api.backend.orb.local/products/categories/${this.id}`);
+    this.category = response.data;
+  
+    //prefill the form with category data
+    this.form.name = this.category.name;
+    this.form.description = this.category.description;
   }
 }
 </script>
 
 <template>
   <div>
-    <h3 class="text-center mb-2"> Edit Category {{categoryId}}</h3>
+    <h3 class="text-center mb-2"> Edit Category {{category.id}}</h3>
     <form >
       <div class="mb-3">
         <label for="name" class="form-label">Name</label>
@@ -31,6 +55,10 @@ export default {
         <textarea v-model="form.description" class="form-control" id="description" rows="3"></textarea>
       </div>
     </form>
+    <button  class="btn btn-primary" @click="editCategory" type="button" :disabled="submitting">
+      <span v-if="submitting" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+      <span role="status">{{ submitting? 'Loading...' : 'Save changes' }}</span>
+    </button>
   </div>
 </template>
 

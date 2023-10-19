@@ -11,12 +11,13 @@ const router = createRouter({
         {
             path: '/categories/create',
             name: 'CategoryCreate',
-            component: () => import('@/components/ProductCategories/CategoryCreate.vue')
+            component: () => import('@/components/ProductCategories/CategoryCreate.vue'),
         },
         {
             path: '/categories/edit/:id',
             name: 'CategoryEdit',
-            component: () => import('@/components/ProductCategories/categoryEdit.vue')
+            component: () => import('@/components/ProductCategories/categoryEdit.vue'),
+            props: route=> ({id: parseInt(route.params.id)})
         }
     ],
 
