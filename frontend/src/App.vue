@@ -1,11 +1,15 @@
 <script>
 
 import {defineComponent} from "vue";
-import ProductsCategories from "@/components/ProductCategories/ProductsCategories.vue";
+
 import HeaderSection from "@/components/utils/HeaderSection.vue";
+import CategoryList from "@/components/ProductCategories/CategoryList.vue";
 
 export default defineComponent({
-  components: {HeaderSection, ProductsCategories}
+  components: {
+    HeaderSection,
+    CategoryList
+  }
 })
 </script>
 <template>

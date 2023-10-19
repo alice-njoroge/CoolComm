@@ -1,10 +1,11 @@
 <script>
 import axios from "axios";
 import Form from "@/components/utils/Form.vue";
+import Button from "@/components/utils/Button.vue";
 
 export default {
   name: "CategoryCreate",
-  components: {Form},
+  components: {Button, Form},
   data(){
     return{
       form: {
@@ -23,9 +24,6 @@ export default {
       this.submitting = false;
       this.$router.push({name: 'categories'})
     },
-    onCancel(){
-      this.$router.push({name: 'categories'})
-    }
   }
 }
 </script>
@@ -33,13 +31,10 @@ export default {
 <template>
   <div>
     <h3 class="text-center mb-2"> Create a New Category</h3>
-     <Form :form="this.form"></Form>
-    <button  class="btn btn-primary" @click="saveCategory" type="button" :disabled="submitting">
-      <span v-if="submitting" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-      <span role="status">{{ submitting? 'Loading...' : 'Save changes' }}</span>
-    </button>
+    <Form :form="this.form"></Form>
+    <Button name="Save Category" @click="saveCategory" :submitting="submitting"></Button>
+    <Button  @click="$router.back()" name="Cancel" class="btn btn-secondary"/>
 
-    <button class="btn btn-secondary mx-2" @click="onCancel" > Cancel </button>
     </div>
 
 </template>

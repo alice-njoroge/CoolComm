@@ -1,10 +1,11 @@
 <script>
 import axios from "axios";
 import Form from "@/components/utils/Form.vue";
+import Button from "@/components/utils/Button.vue";
 
 export default {
   name: "CategoryEdit",
-  components: {Form},
+  components: {Button, Form},
   props: {
     id:{
       type: Number,
@@ -29,8 +30,7 @@ export default {
 
       this.submitting = false;
       this.$router.push({name: 'categories'})
-
-    }
+    },
   },
 
   async created() {
@@ -48,10 +48,10 @@ export default {
   <div>
     <h3 class="text-center mb-2"> Edit Category {{category.id}}</h3>
     <Form :form="this.form"></Form>
-    <button  class="btn btn-primary" @click="editCategory" type="button" :disabled="submitting">
-      <span v-if="submitting" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-      <span role="status">{{ submitting? 'Loading...' : 'Save changes' }}</span>
-    </button>
+    <Button name="Save Changes" @click="editCategory" :submitting="submitting"></Button>
+    <Button  @click="$router.back()" name="Cancel" class="btn btn-secondary"/>
+    <!-- TODO: how can I delete from here?? would love to open a confirmation modal first -->
+    <Button class="btn btn-danger" name="Remove Category"/>
   </div>
 </template>
 

@@ -87,21 +87,10 @@ export default {
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" v-if="deleting" id="exampleModalLabel"> Remove Product Category</h1>
-          <h1 class="modal-title fs-5" v-else id="exampleModalLabel">{{ editing ? 'Edit': 'Add'  }} Product Category</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p v-if="deleting"> Are you sure you want to delete this category: <b> {{ this.category.name }} </b>?? </p>
-          <form v-else>
-            <div class="mb-3">
-              <label for="name" class="form-label">Name</label>
-              <input v-model="form.name" type="text" class="form-control" id="name">
-            </div>
-            <div class="mb-3">
-              <label for="description" class="form-label">Description</label>
-              <textarea v-model="form.description" class="form-control" id="description" rows="3"></textarea>
-            </div>
-          </form>
+          <p > Are you sure you want to delete this category ?? </p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -109,10 +98,6 @@ export default {
           <button v-if="deleting" @click="removeCategory" class="btn btn-danger" type="button" :disabled="submitting">
             <span v-if="submitting" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
             <span role="status"> {{ submitting ? 'Loading...': 'Delete Category'  }}</span>
-          </button>
-          <button v-else class="btn btn-primary" @click="saveCategory" type="button" :disabled="submitting">
-            <span v-if="submitting" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-            <span role="status">{{ submitting? 'Loading...' : 'Save changes' }}</span>
           </button>
 
         </div>
