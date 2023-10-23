@@ -18,6 +18,11 @@ const router = createRouter({
             name: 'CategoryEdit',
             component: () => import('@/components/ProductCategories/categoryEdit.vue'),
             props: route=> ({id: parseInt(route.params.id)})
+        },
+        {
+            path: '/:pathMatch(.*)*',
+            name: 'NotFound',
+            component: ()=> import('@/components/utils/NotFound.vue')
         }
     ],
 
