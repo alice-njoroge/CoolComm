@@ -31,8 +31,8 @@ export default {
 <template>
   <div>
     <h3 class="text-center mb-2"> Create a New Category</h3>
-    <Form :form="this.form"></Form>
-    <Button name="Save Category" @click="saveCategory" :submitting="submitting"></Button>
+    <Form @formSubmit="saveCategory" :form="this.form" :submitting="submitting"></Form>
+<!--    <Button name="Save Category" @click="saveCategory" :submitting="submitting"></Button>-->
     <Button  @click="$router.back()" name="Cancel" class="btn btn-secondary"/>
 
     </div>
