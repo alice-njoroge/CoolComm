@@ -24,10 +24,7 @@ export default {
   },
 
   methods: {
-    required(value) {
-      if (value && value.trim()) return true;
-      return 'this field is required'
-    }
+
   }
 }
 </script>
@@ -42,7 +39,7 @@ export default {
           type="text"
           class="form-control"
           id="name"
-          :rules="required"
+          rules="required"
       />
       <VeeErrorMessage name="name"/>
     </div>
@@ -58,7 +55,7 @@ export default {
           id="description"
           rows="3"
           type="text"
-          :rules="required"
+          rules="required"
       />
       <VeeErrorMessage class="invalid-feedback" name="description"/>
     </div>
