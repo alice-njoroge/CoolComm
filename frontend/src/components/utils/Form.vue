@@ -36,6 +36,7 @@ export default {
           class="form-control"
           id="name"
           rules="required"
+          label="Name"
       />
       <VeeErrorMessage name="name"/>
     </div>
@@ -52,6 +53,7 @@ export default {
           rows="3"
           type="text"
           rules="required|max:10"
+          label="Description"
       />
       <VeeErrorMessage class="invalid-feedback" name="description"/>
     </div>
