@@ -10,32 +10,30 @@ export default {
     VeeErrorMessage: ErrorMessage
   },
   name: "Form",
-  props:{
+  props: {
     form: {
       type: Object,
       default: {},
     },
     submitting: false
   },
-  data(){
-    return{
+  data() {
+    return {
       hasError: true
+    }
+  },
+
+  methods: {
+    required(value) {
+      if (value && value.trim()) return true;
+      return 'this field is required'
     }
   }
 }
 </script>
 
 <template>
-  <VeeForm @submit="this.$emit('formSubmit')" :validation-schema="{
-    name: (value)=>{
-      if(value && value.trim()) return true;
-      return 'this field is required'
-    },
-    description: (value)=>{
-      if(value && value.trim()) return true;
-      return 'this field is required';
-    },
-  }">
+  <VeeForm @submit="this.$emit('formSubmit')">
     <div class="mb-3">
       <label for="name" class="form-label">Name</label>
       <VeeField
@@ -44,9 +42,9 @@ export default {
           type="text"
           class="form-control"
           id="name"
-          required
+          :rules="required"
       />
-      <VeeErrorMessage name="name" />
+      <VeeErrorMessage name="name"/>
     </div>
     <div class="mb-3">
       <label for="description" class="form-label">Description</label>
@@ -59,15 +57,15 @@ export default {
           }"
           id="description"
           rows="3"
-          required
           type="text"
+          :rules="required"
       />
-      <VeeErrorMessage class="invalid-feedback" name="description" />
+      <VeeErrorMessage class="invalid-feedback" name="description"/>
     </div>
 
-    <button  class="btn btn-primary mx-2 my-2"  type="submit" :disabled="submitting">
+    <button class="btn btn-primary mx-2 my-2" type="submit" :disabled="submitting">
       <span v-if="submitting" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-      <span role="status">{{ submitting? 'Loading...' : 'Submit' }}</span>
+      <span role="status">{{ submitting ? 'Loading...' : 'Submit' }}</span>
     </button>
 
   </VeeForm>
