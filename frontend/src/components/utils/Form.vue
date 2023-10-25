@@ -1,5 +1,4 @@
 <script>
-import {Form, Field, ErrorMessage} from "vee-validate";
 import Button from "@/components/utils/Button.vue";
 
 export default {
