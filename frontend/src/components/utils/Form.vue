@@ -5,9 +5,6 @@ import Button from "@/components/utils/Button.vue";
 export default {
   components: {
     Button,
-    VeeForm: Form,
-    VeeField: Field,
-    VeeErrorMessage: ErrorMessage
   },
   name: "Form",
   props: {
