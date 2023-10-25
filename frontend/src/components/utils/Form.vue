@@ -51,7 +51,7 @@ export default {
           id="description"
           rows="3"
           type="text"
-          rules="required"
+          rules="required|max:10"
       />
       <VeeErrorMessage class="invalid-feedback" name="description"/>
     </div>
