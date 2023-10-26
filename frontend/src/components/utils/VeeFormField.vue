@@ -10,7 +10,8 @@ export default {
     name: {
       type: String,
       default: ''
-    }
+    },
+    hasError: false
   }
 }
 </script>
@@ -30,7 +31,11 @@ export default {
         v-bind="$attrs"
         :label="label"
     />
-    <VeeErrorMessage :name="name"/>
+    <VeeErrorMessage
+        :class="{
+      'invalid-feedback' : hasError
+    }"
+        :name="name"/>
   </div>
 </template>
 

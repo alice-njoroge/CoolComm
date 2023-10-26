@@ -17,29 +17,32 @@ export default {
   },
   data() {
     return {
-      hasError: true
+      hasError: false
     }
   },
 
-  methods: {
-
-  }
+  methods: {}
 }
 </script>
 
 <template>
   <VeeForm @submit="this.$emit('formSubmit')">
-   <vee-form-field  v-model="form.name" name="name" label="Name" rules="required"  rows="3" type="text"/>
-   <vee-form-field  id="description"
-
+    <vee-form-field v-model="form.name"
+                    name="name"
+                    label="Name"
+                    rules="required"
+                    rows="3" type="text"
+                    :has-error="hasError"
+    />
+    <vee-form-field as="textarea" id="description"
                     v-model="form.description"
                     name="description"
                     label="Description"
                     rules="required"
                     rows="3"
                     type="text"
-   />
-
+                    :has-error="hasError"
+    />
 
     <button class="btn btn-primary mx-2 my-2" type="submit" :disabled="submitting">
       <span v-if="submitting" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
