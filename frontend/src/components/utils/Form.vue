@@ -1,8 +1,10 @@
 <script>
 import Button from "@/components/utils/Button.vue";
+import VeeFormField from "@/components/utils/VeeFormField.vue";
 
 export default {
   components: {
+    VeeFormField,
     Button,
   },
   name: "Form",
@@ -27,36 +29,17 @@ export default {
 
 <template>
   <VeeForm @submit="this.$emit('formSubmit')">
-    <div class="mb-3">
-      <label for="name" class="form-label">Name</label>
-      <VeeField
-          name="name"
-          v-model="form.name"
-          type="text"
-          class="form-control"
-          id="name"
-          rules="required"
-          label="Name"
-      />
-      <VeeErrorMessage name="name"/>
-    </div>
-    <div class="mb-3">
-      <label for="description" class="form-label">Description</label>
-      <VeeField
-          name="description"
-          v-model="form.description"
-          class="form-control "
-          :class="{
-            'is-invalid': hasError
-          }"
-          id="description"
-          rows="3"
-          type="text"
-          rules="required|max:10"
-          label="Description"
-      />
-      <VeeErrorMessage class="invalid-feedback" name="description"/>
-    </div>
+   <vee-form-field  v-model="form.name" name="name" label="Name" rules="required"  rows="3" type="text"/>
+   <vee-form-field  id="description"
+
+                    v-model="form.description"
+                    name="description"
+                    label="Description"
+                    rules="required"
+                    rows="3"
+                    type="text"
+   />
+
 
     <button class="btn btn-primary mx-2 my-2" type="submit" :disabled="submitting">
       <span v-if="submitting" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
