@@ -53,6 +53,7 @@ class ProductController extends AbstractController
         $data = json_decode($content, associative: true);
 
         $categoryId = array_key_exists('productCategoryId', $data) ? $data['productCategoryId'] : null;
+        $imagePath = preg_replace('/\s+/', '-', strtolower($data['name'])) . '.png';
 
         if($categoryId){
             // if the item exists in DB and is not deleted, get the object
@@ -66,6 +67,7 @@ class ProductController extends AbstractController
         $product->setName($data['name']);
         $product->setDescription($data['description']);
         $product->setPrice($data['price']);
+        $product->setImagePath($imagePath);
 
         $product->setProductId($uuid->toString());
         $product->setProductCategory($category);
@@ -88,6 +90,7 @@ class ProductController extends AbstractController
 
         $categoryId = array_key_exists('productCategory', $data) ? $data['productCategory'] : null;
 
+
         if($categoryId){
             // if the item exists in DB and is not deleted, get the object
             $category = $this->productCategoryRepository->findById($categoryId);
@@ -97,6 +100,7 @@ class ProductController extends AbstractController
         $product->setDescription($data['description']);
         $product->setPrice($data['price']);
         $product->setProductCategory($category);
+        $product->setImagePath($data['imagePath']);
 
 
         $this->productRepository->save($product);

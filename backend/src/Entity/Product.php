@@ -33,6 +33,9 @@ class Product implements JsonSerializable
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $deleted_at = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $imagePath = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -117,7 +120,20 @@ class Product implements JsonSerializable
             'description'=>$this->getDescription(),
             'productId'=>$this->getProductId(),
             'productCategory'=>$this->getProductCategory(),
-            'deleted_at'=>$this->getDeletedAt()
+            'deleted_at'=>$this->getDeletedAt(),
+            'imagePath'=>$this->getImagePath()
         ];
+    }
+
+    public function getImagePath(): ?string
+    {
+        return $this->imagePath;
+    }
+
+    public function setImagePath(?string $imagePath): static
+    {
+        $this->imagePath = $imagePath;
+
+        return $this;
     }
 }
