@@ -31,8 +31,9 @@ class ProductController extends AbstractController
     #[Route('/products', name: 'app_product', methods: ['GET'])]
     public function index(): JsonResponse
     {
-        $products = $this->productRepository->findBy([
-            'deleted_at' => null]);
+        $products = $this->productRepository->findBy(
+            ['deleted_at' => null],
+            ['id'=> 'DESC']);
         return $this->json($products);
     }
 
